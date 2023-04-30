@@ -12,17 +12,12 @@ namespace AvatarScripts
 
         bool actorInNull = true;
 
-
-        void Start()
-        {
-            actorInNull = actorTransform == null;
-        }
-
         void Update()
         {
             if (actorInNull)
                 return;
-            if (rb.velocity.magnitude == 0) return;
+            if (rb.velocity.magnitude == 0) 
+                return;
             UpdateRotation();
         }
 
@@ -33,7 +28,7 @@ namespace AvatarScripts
             actorInNull = false;
         }
 
-        public void SetActorTransform(Animator trans) => actorTransform = trans.transform;
+        public void SetActorWithAnimator(Animator trans) => actorTransform = trans.transform;
 
         void UpdateRotation() => actorTransform.rotation = Quaternion.Euler(0, cameraTransform.eulerAngles.y, 0);
     }
