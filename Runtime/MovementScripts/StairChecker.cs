@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
+using AvatarScripts;
 using UnityEngine;
 
-namespace CollsionBasedMovement
+namespace MovementScripts
 {
     [Serializable]
     public class StairChecker

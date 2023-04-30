@@ -1,5 +1,5 @@
 using System;
-using CollsionBasedMovement;
+using MovementScripts;
 using UnityEngine;
 
 public class MoveStatsManager : MoveStats

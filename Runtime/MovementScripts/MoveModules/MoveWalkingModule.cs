@@ -1,9 +1,10 @@
 using System;
-using CollsionBasedMovement.MoveModules.SubModules;
+using AvatarScripts;
+using MovementScripts.MoveModules.SubModules;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace CollsionBasedMovement.MoveModules
+namespace MovementScripts.MoveModules
 {
     [Serializable]
     public class MoveWalkingModule : MoveBaseModule
@@ -22,6 +23,11 @@ namespace CollsionBasedMovement.MoveModules
         bool wantToUnCrunch;
         bool wantToCrunch;
 
+        public override void OnStart(Rigidbody rb, CharacterCapsule cap, GroundCheck gc, MoveStats ms)
+        {
+            base.OnStart(rb, cap, gc, ms);
+            groundJumping.OnStart(ms);
+        }
 
         protected override void OnGravity()
         {

@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
-using CollsionBasedMovement;
+using MovementScripts;
 using UnityEngine;
 
-namespace AvatarAnimator
+namespace AvatarScripts
 {
     public class MoveAnimator : MonoBehaviour
     {
@@ -73,6 +73,8 @@ namespace AvatarAnimator
 
         void OnValidate()
         {
+            if (Application.isPlaying)
+                return;
             if (animator == null && !TryGetComponent(out animator))
                 throw new MissingComponentException();
             if (character == null && !transform.parent.TryGetComponent(out character))

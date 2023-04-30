@@ -1,11 +1,12 @@
 using System;
+using AvatarScripts;
 using CameraScripts;
-using CollsionBasedMovement.MoveModules;
+using MovementScripts.MoveModules;
 using PhysicsLayer;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace CollsionBasedMovement
+namespace MovementScripts
 {
     [RequireComponent(typeof(GroundCheck), typeof(Rigidbody), typeof(CharacterCapsule))]
     public class Movement : MoveCharacter
@@ -58,9 +59,9 @@ namespace CollsionBasedMovement
         {
             Rigid.freezeRotation = true;
             Rigid.useGravity = false;
-            WalkingModule.OnStart(Rigid, capsuleCollider, groundChecker);
-            swimModule.OnStart(Rigid, capsuleCollider, groundChecker);
-            hoverModule.OnStart(Rigid, capsuleCollider, groundChecker);
+            WalkingModule.OnStart(Rigid, capsuleCollider, groundChecker,Stats);
+            swimModule.OnStart(Rigid, capsuleCollider, groundChecker,Stats);
+            hoverModule.OnStart(Rigid, capsuleCollider, groundChecker,Stats);
             ChangeModule(WalkingModule);
             transform.SetParent(null);
         }

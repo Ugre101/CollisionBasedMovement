@@ -1,9 +1,9 @@
 using System;
-using CollsionBasedMovement;
+using MovementScripts;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace NavAgentMovement
+namespace Nav_Agent_Movement
 {
     public class NavAgentMover : MoveCharacter
     {

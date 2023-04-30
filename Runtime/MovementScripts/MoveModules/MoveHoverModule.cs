@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace CollsionBasedMovement.MoveModules
+namespace MovementScripts.MoveModules
 {
     [Serializable]
     public class MoveHoverModule : MoveBaseModule

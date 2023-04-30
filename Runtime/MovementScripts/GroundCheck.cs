@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using AvatarScripts;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 
-namespace CollsionBasedMovement
+namespace MovementScripts
 {
     public class GroundCheck : MonoBehaviour
     {

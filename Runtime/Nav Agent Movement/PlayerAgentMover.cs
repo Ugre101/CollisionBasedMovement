@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
 
-namespace NavAgentMovement
+namespace Nav_Agent_Movement
 {
     [RequireComponent(typeof(NavMeshAgent))]
     public class PlayerAgentMover : NavAgentMover

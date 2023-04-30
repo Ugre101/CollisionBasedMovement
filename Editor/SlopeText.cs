@@ -1,4 +1,4 @@
-using CollsionBasedMovement;
+using MovementScripts;
 using TMPro;
 using UnityEngine;
 

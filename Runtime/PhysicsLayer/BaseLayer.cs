@@ -1,4 +1,4 @@
-using CollsionBasedMovement;
+using MovementScripts;
 using UnityEngine;
 
 namespace PhysicsLayer

@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using CollsionBasedMovement;
+using MovementScripts;
 using UnityEngine;
 using Object = UnityEngine.Object;
 

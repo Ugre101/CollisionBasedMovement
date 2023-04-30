@@ -3,7 +3,7 @@ using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace NavAgentMovement
+namespace Nav_Agent_Movement
 {
     [RequireComponent(typeof(NavMeshAgent))]
     public class AiNavAgentMover : NavAgentMover

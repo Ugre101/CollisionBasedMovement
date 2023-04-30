@@ -2,20 +2,19 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace CollsionBasedMovement
+namespace MovementScripts
 {
     [Serializable]
     public class GroundJumping
     {
-        [SerializeField] float jumpForce = 1f;
         [SerializeField] float jumpCooldown = 0.2f;
-        [SerializeField, Range(1, 7),] int maxJumps = 2;
 
         public UnityEvent jumped;
         bool coolDownPassed = true;
         int jumpCount;
 
         float lastJump;
+        MoveStats stats;
         bool wantToJump;
 
         public bool Jumping { get; private set; }
@@ -27,7 +26,7 @@ namespace CollsionBasedMovement
             coolDownPassed = lastJump + jumpCooldown < Time.time;
         }
 
-        bool CanJump() => wantToJump && jumpCount < maxJumps && coolDownPassed;
+        bool CanJump() => wantToJump && jumpCount < stats.MaxJumpCount && coolDownPassed;
 
         public void OnUpdate(GroundCheck checker)
         {
@@ -56,11 +55,17 @@ namespace CollsionBasedMovement
                 vel.y = 0;
                 rb.velocity = vel;
             }
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+
+            rb.AddForce(Vector3.up * stats.JumpStrength, ForceMode.Impulse);
             lastJump = Time.time;
             jumped?.Invoke();
         }
 
         public void WantToJump(bool value) => wantToJump = value;
+
+        public void OnStart(MoveStats ms)
+        {
+            stats = ms;
+        }
     }
 }

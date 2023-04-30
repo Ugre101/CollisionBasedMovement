@@ -1,7 +1,8 @@
 using System;
+using AvatarScripts;
 using UnityEngine;
 
-namespace CollsionBasedMovement
+namespace MovementScripts
 {
     public abstract class MoveCharacter : MonoBehaviour
     {

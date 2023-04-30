@@ -1,8 +1,9 @@
 using System;
+using AvatarScripts;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace CollsionBasedMovement.MoveModules
+namespace MovementScripts.MoveModules
 {
     [Serializable]
     public abstract class MoveBaseModule
@@ -10,12 +11,13 @@ namespace CollsionBasedMovement.MoveModules
         protected CharacterCapsule capsule;
         protected GroundCheck checker;
         protected Rigidbody rigid;
-
-        public void OnStart(Rigidbody rb, CharacterCapsule cap, GroundCheck gc)
+        protected MoveStats stats;
+        public virtual void OnStart(Rigidbody rb, CharacterCapsule cap, GroundCheck gc,MoveStats ms)
         {
             rigid = rb;
             capsule = cap;
             checker = gc;
+            stats = ms;
         }
 
         public virtual void OnEnter(Collider collider)

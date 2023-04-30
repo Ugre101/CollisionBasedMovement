@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace CollsionBasedMovement.MoveModules.SubModules
+namespace MovementScripts.MoveModules.SubModules
 {
     [Serializable]
     public class GroundSnap

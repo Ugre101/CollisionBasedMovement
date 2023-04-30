@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace CollsionBasedMovement
+namespace MovementScripts
 {
     [Serializable]
     public abstract class MoveStats : MonoBehaviour
