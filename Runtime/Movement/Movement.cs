@@ -83,6 +83,12 @@ namespace CollsionBasedMovement
             currentModule.OnUpdate();
         }
 
+        public void Stop()
+        {
+            if (CurrentMode != MoveModes.Falling)
+                Rigid.velocity = Vector3.zero;
+        }
+
         void FixedUpdate()
         {
             groundChecker.OnFixedUpdate();

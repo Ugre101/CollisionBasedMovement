@@ -1,3 +1,5 @@
+using System;
+using Unity.Plastic.Newtonsoft.Json.Serialization;
 using UnityEngine;
 
 namespace CollsionBasedMovement
@@ -17,12 +19,23 @@ namespace CollsionBasedMovement
 
         [SerializeField, Range(1.5f, 3f),] protected float sprintAcceleration = 2f;
         protected bool sprinting;
+        [SerializeField] MoveModes currentMode;
 
         [field: SerializeField] public Rigidbody Rigid { get; private set; }
         [field: SerializeField] public MoveStatsManager Stats { get; private set; }
         protected float Speed => Stats.MoveSpeed.Value;
         public float MaxSwimSpeed => Speed;
-        public MoveModes CurrentMode { get; protected set; }
+        public event Action<MoveModes> ChangedMode; 
+        public MoveModes CurrentMode
+        {
+            get => currentMode;
+            protected set
+            {
+                currentMode = value;
+                ChangedMode?.Invoke(value);
+            }
+        }
+
         protected float MaxSpeed => sprinting ? Speed * sprintMultiplier : Speed;
         public bool Swimming => CurrentMode is MoveModes.Swimming;
 
