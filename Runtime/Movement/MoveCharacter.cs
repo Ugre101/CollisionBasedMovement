@@ -1,5 +1,4 @@
 using System;
-using Unity.Plastic.Newtonsoft.Json.Serialization;
 using UnityEngine;
 
 namespace CollsionBasedMovement
@@ -20,10 +19,11 @@ namespace CollsionBasedMovement
         [SerializeField, Range(1.5f, 3f),] protected float sprintAcceleration = 2f;
         protected bool sprinting;
         [SerializeField] MoveModes currentMode;
+        [SerializeField] protected CharacterCapsule capsuleCollider;
 
         [field: SerializeField] public Rigidbody Rigid { get; private set; }
-        [field: SerializeField] public MoveStatsManager Stats { get; private set; }
-        protected float Speed => Stats.MoveSpeed.Value;
+        [field: SerializeReference] public MoveStats Stats { get; private set; }
+        protected float Speed => Stats.WalkSpeed;
         public float MaxSwimSpeed => Speed;
         public event Action<MoveModes> ChangedMode; 
         public MoveModes CurrentMode

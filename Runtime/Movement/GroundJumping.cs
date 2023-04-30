@@ -50,6 +50,12 @@ namespace CollsionBasedMovement
             Jumping = true;
             jumpCount++;
             coolDownPassed = false;
+            if (rb.velocity.y < 0)
+            {
+                var vel = rb.velocity;
+                vel.y = 0;
+                rb.velocity = vel;
+            }
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             lastJump = Time.time;
             jumped?.Invoke();

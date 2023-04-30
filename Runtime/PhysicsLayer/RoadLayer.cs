@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using CollsionBasedMovement;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace PhysicsLayer
 {
@@ -20,7 +21,7 @@ namespace PhysicsLayer
             if (removeRoutine is not null)
                 StopCoroutine(removeRoutine);
             else
-                movement.Stats.MoveSpeed.AddMod(speedMod);
+                movement.Stats.AddMod(MoveCharacter.MoveModes.Walking, speedMod);
         }
 
         public override void OnExit(Movement movement)
@@ -33,10 +34,10 @@ namespace PhysicsLayer
             throw new NotImplementedException();
         }
 
-        IEnumerator RemoveAfterDelay(MoveStatsManager moveStatsManager)
+        IEnumerator RemoveAfterDelay(MoveStats moveStatsManager)
         {
             yield return waitForSeconds;
-            moveStatsManager.MoveSpeed.RemoveMod(speedMod);
+            moveStatsManager.RemoveMod(MoveCharacter.MoveModes.Walking, speedMod);
             removeRoutine = null;
         }
     }

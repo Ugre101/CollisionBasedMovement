@@ -1,3 +1,4 @@
+using System;
 using CameraScripts;
 using CollsionBasedMovement.MoveModules;
 using PhysicsLayer;
@@ -9,7 +10,6 @@ namespace CollsionBasedMovement
     [RequireComponent(typeof(GroundCheck), typeof(Rigidbody), typeof(CharacterCapsule))]
     public class Movement : MoveCharacter
     {
-        [SerializeField] CharacterCapsule capsuleCollider;
         [SerializeField] Transform ori;
         [SerializeField] GroundCheck groundChecker;
 
@@ -32,7 +32,6 @@ namespace CollsionBasedMovement
 
         // Modules 
         [SerializeField] MoveSwimModule swimModule;
-        [SerializeField] MoveWalkingModule walkingModule;
         [SerializeField] MoveHoverModule hoverModule;
 
         // Max Values
@@ -53,15 +52,16 @@ namespace CollsionBasedMovement
 
         // Inputs
         float y, x;
+        [field: SerializeField] public MoveWalkingModule WalkingModule { get; private set; }
 
         void Start()
         {
             Rigid.freezeRotation = true;
             Rigid.useGravity = false;
-            walkingModule.OnStart(Rigid, capsuleCollider, groundChecker);
+            WalkingModule.OnStart(Rigid, capsuleCollider, groundChecker);
             swimModule.OnStart(Rigid, capsuleCollider, groundChecker);
             hoverModule.OnStart(Rigid, capsuleCollider, groundChecker);
-            ChangeModule(walkingModule);
+            ChangeModule(WalkingModule);
             transform.SetParent(null);
         }
 
@@ -81,12 +81,6 @@ namespace CollsionBasedMovement
             };
 
             currentModule.OnUpdate();
-        }
-
-        public void Stop()
-        {
-            if (CurrentMode != MoveModes.Falling)
-                Rigid.velocity = Vector3.zero;
         }
 
         void FixedUpdate()
@@ -147,6 +141,13 @@ namespace CollsionBasedMovement
                 throw new MissingComponentException("Missing ground checker");
         }
 #endif
+
+        public void Stop()
+        {
+            if (CurrentMode != MoveModes.Falling)
+                Rigid.velocity = Vector3.zero;
+        }
+
         void ShouldISwim(Collider other)
         {
             if (other.gameObject.layer != LayerMask.NameToLayer("Water"))
@@ -180,7 +181,7 @@ namespace CollsionBasedMovement
                     CurrentMode = MoveModes.Hovering;
                     break;
                 case MoveModes.Hovering:
-                    ChangeModule(walkingModule);
+                    ChangeModule(WalkingModule);
                     CurrentMode = MoveModes.Hovering;
                     break;
             }
@@ -188,7 +189,7 @@ namespace CollsionBasedMovement
 
         void StopSwimming()
         {
-            ChangeModule(walkingModule);
+            ChangeModule(WalkingModule);
             CurrentMode = MoveModes.Walking;
             print("Stop Swimming");
         }
@@ -300,11 +301,16 @@ namespace CollsionBasedMovement
 
         public override Vector3 GetLocalMoveDirection() => ori.InverseTransformDirection(moveDir);
 
-        public override bool IsCrouching() => CurrentMode == MoveModes.Walking && walkingModule.IsCrunching();
+        public override bool IsCrouching() => CurrentMode == MoveModes.Walking && WalkingModule.IsCrunching();
 
         public override bool IsGrounded() => groundChecker.IsGrounded;
         public override bool WasGrounded() => groundChecker.WasGrounded;
 
         public override Vector3 GetUpVector() => ori.rotation * Vector3.up;
+
+        public void AddMod(MoveModes walking, FloatMod speedMod)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

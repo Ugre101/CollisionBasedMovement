@@ -20,6 +20,7 @@ namespace CollsionBasedMovement.MoveModules
         bool crunching;
 
         bool wantToUnCrunch;
+        bool wantToCrunch;
 
 
         protected override void OnGravity()
@@ -79,9 +80,25 @@ namespace CollsionBasedMovement.MoveModules
         public override void OnUpdate()
         {
             groundJumping.OnUpdate(checker);
-            if (wantToUnCrunch && CanStopCrunching()) StopCrunching();
+            if (wantToCrunch && checker.IsGrounded) 
+                StartCrunching();
+            if (wantToUnCrunch && CanStopCrunching()) 
+                StopCrunching();
         }
 
+        void StartCrunching()
+        {
+            wantToCrunch = false;
+            crunching = true;
+            var c1 = capsule.YMin;
+            capsule.HalfHeight();
+            var c2 = capsule.YMin;
+            rigid.position += Vector3.down * (c2 - c1);
+            StartedCrunching?.Invoke();
+        }
+
+        public event Action StartedCrunching;
+        public event Action StoppedCrounching;
         bool CanStopCrunching()
         {
             var capPos = capsule.Center;
@@ -109,15 +126,13 @@ namespace CollsionBasedMovement.MoveModules
         {
             if (ctx.performed && !crunching)
             {
-                crunching = true;
-                var c1 = capsule.YMin;
-                capsule.HalfHeight();
-                var c2 = capsule.YMin;
-                rigid.position += Vector3.down * (c2 - c1);
+                wantToCrunch = true;
+                wantToUnCrunch = false;
             }
             else if (ctx.canceled)
             {
                 wantToUnCrunch = true;
+                wantToCrunch = false;
             }
         }
 
@@ -141,6 +156,7 @@ namespace CollsionBasedMovement.MoveModules
             crunching = false;
             wantToUnCrunch = false;
             capsule.RestoreHeight();
+            StoppedCrounching?.Invoke();
         }
 
         static void SlopeGravity(Rigidbody rb)
