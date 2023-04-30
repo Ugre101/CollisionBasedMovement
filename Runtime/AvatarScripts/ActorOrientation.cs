@@ -10,11 +10,11 @@ namespace AvatarScripts
         [SerializeField] Transform actorTransform;
 
 
-        bool actorInNull = true;
+        bool hasActor;
 
         void Update()
         {
-            if (actorInNull)
+            if (hasActor is false)
                 return;
             if (rb.velocity.magnitude == 0) 
                 return;
@@ -25,7 +25,7 @@ namespace AvatarScripts
         public void SetActorTransform(Transform trans)
         {
             actorTransform = trans;
-            actorInNull = false;
+            hasActor = true;
         }
 
         public void SetActorWithAnimator(Animator trans) => actorTransform = trans.transform;
