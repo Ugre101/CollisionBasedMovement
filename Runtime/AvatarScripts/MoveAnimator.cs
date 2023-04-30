@@ -41,7 +41,7 @@ namespace AvatarScripts
 
             var move = character.GetLocalMoveDirection();
             animator.SetBool(Crouch, character.IsCrouching());
-            animator.SetBool(Ground, character.IsGrounded() || character.WasGrounded()); 
+            animator.SetBool(Ground, CheckGrounded()); 
             switch (character.CurrentMode)
             {
                 case MoveCharacter.MoveModes.Walking:
@@ -62,6 +62,15 @@ namespace AvatarScripts
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        bool CheckGrounded()
+        {
+            if (character.IsGrounded()) 
+                return true;
+            if (character.WasGrounded())
+                return !character.IsJumping();
+            return false;
         }
 
         void OnValidate()

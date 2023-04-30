@@ -311,6 +311,8 @@ namespace MovementScripts
         public override bool IsGrounded() => groundChecker.IsGrounded;
         public override bool WasGrounded() => groundChecker.WasGrounded;
 
+        public override bool IsJumping() => WalkingModule.IsJumping;
+
         public override Vector3 GetUpVector() => ori.rotation * Vector3.up;
 
         public void AddMod(MoveModes walking, FloatMod speedMod)

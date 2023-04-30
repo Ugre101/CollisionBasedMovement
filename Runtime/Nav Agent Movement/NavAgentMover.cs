@@ -69,6 +69,7 @@ namespace Nav_Agent_Movement
         public override Vector3 GetLocalMoveDirection() => throw new NotImplementedException();
 
         public override Vector3 GetUpVector() => throw new NotImplementedException();
+        public override bool IsJumping() => false;
 
         float OffDiff()
         {

@@ -21,6 +21,7 @@ namespace MovementScripts.MoveModules
 
         bool wantToUnCrunch;
         bool wantToCrunch;
+        public bool IsJumping => groundJumping.Jumping;
 
         public override void OnStart(Rigidbody rb, CharacterCapsule cap, GroundCheck gc, MoveStats ms)
         {

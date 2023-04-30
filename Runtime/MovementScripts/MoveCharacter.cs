@@ -62,5 +62,6 @@ namespace MovementScripts
         public float GetMaxSpeed() => MaxSpeed;
         public abstract Vector3 GetLocalMoveDirection();
         public abstract Vector3 GetUpVector();
+        public abstract bool IsJumping();
     }
 }
