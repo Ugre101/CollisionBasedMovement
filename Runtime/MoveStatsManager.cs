@@ -4,20 +4,23 @@ using UnityEngine;
 
 public class MoveStatsManager : MoveStats
 {
-    [field: SerializeField] public FloatStat MoveSpeed { get; private set; } = new(10);
-    [field: SerializeField] public FloatStat SwimmingSpeed { get; private set; } = new(8);
-    public override int MaxJumpCount => 2;
-    public override float JumpStrength => 2f;
-    public override float SprintMultiplier => 1.5f;
-    public override float SwimSpeed => SwimmingSpeed.Value;
-    public override float WalkSpeed => MoveSpeed.Value;
+    [ SerializeField]  FloatStat moveSpeed  = new(10);
+    [ SerializeField]  FloatStat swimmingSpeed  = new(8);
+    [ SerializeField]  FloatStat sprintMultiplier  = new(8);
+    [SerializeField] FloatStat jumpStrength = new FloatStat(2f);
+    [SerializeField, Range(1, 4)] int jumpCount = 2;
+    public override int MaxJumpCount => jumpCount;
+    public override float JumpStrength => jumpStrength.Value;
+    public override float SprintMultiplier => sprintMultiplier.Value;
+    public override float SwimSpeed => swimmingSpeed.Value;
+    public override float WalkSpeed => moveSpeed.Value;
 
     public override void AddMod(MoveCharacter.MoveModes mode, FloatMod speedMod)
     {
         switch (mode)
         {
             case MoveCharacter.MoveModes.Walking:
-                MoveSpeed.AddMod(speedMod);
+                moveSpeed.AddMod(speedMod);
                 break;
             case MoveCharacter.MoveModes.Falling:
                 break;
@@ -35,7 +38,7 @@ public class MoveStatsManager : MoveStats
         switch (mode)
         {
             case MoveCharacter.MoveModes.Walking:
-                MoveSpeed.RemoveMod(speedMod);
+                moveSpeed.RemoveMod(speedMod);
                 break;
             case MoveCharacter.MoveModes.Falling:
                 break;

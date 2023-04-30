@@ -258,7 +258,11 @@ namespace MovementScripts
             groundChecker.SetDirection(moveDir);
 
             var accDelta = MaxSpeed / Mathf.Max(Rigid.velocity.magnitude, 2f);
-            var force = moveDir * (Speed * accDelta);
+            var force = moveDir;
+            if (CurrentMode == MoveModes.Swimming)
+                force *=  MaxSwimSpeed * accDelta;
+            else
+                force *=  Speed * accDelta;
             currentModule.OnMove(force, sprinting, sprintAcceleration);
         }
 

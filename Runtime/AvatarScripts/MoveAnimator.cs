@@ -75,8 +75,8 @@ namespace AvatarScripts
         {
             if (Application.isPlaying)
                 return;
-            if (animator == null && !TryGetComponent(out animator))
-                throw new MissingComponentException();
+            //   if (animator == null && !TryGetComponent(out animator))
+            //     throw new MissingComponentException();
             if (character == null && !transform.parent.TryGetComponent(out character))
                 throw new MissingComponentException();
         }
