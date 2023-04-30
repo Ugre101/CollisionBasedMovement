@@ -1,0 +1,21 @@
+{
+  "name": "com.ugre.ugre-tools",
+  "version": "1.0.0",
+  "displayName": "Collision Based Movement",
+  "unity": "2021.3",
+  "dependencies": {
+    "com.unity.cinemachine": "2.8.9",
+    "com.unity.inputsystem": "1.5.1"
+  },
+  "keywords": [
+    "movement",
+    "camera",
+    "first person",
+    "third person"
+  ],
+  "author": {
+    "name": "Gustav Westin",
+    "email": "",
+    "url": ""
+  }
+}
