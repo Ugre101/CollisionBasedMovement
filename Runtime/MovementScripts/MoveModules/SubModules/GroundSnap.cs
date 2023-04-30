@@ -19,7 +19,8 @@ namespace MovementScripts.MoveModules.SubModules
             var max = capsuleHeight * maxDist;
             if (checker.DistanceToGround > max || checker.DistanceToGround < min)
                 return false;
-            var distanceToGround = checker.DistanceToGround - Physics.defaultContactOffset;
+            
+            var distanceToGround = checker.DistanceToGround;
             var maxSnap = capsuleHeight * maxSnapCapsule;
             toSnap = Vector3.down * Mathf.Min(distanceToGround, maxSnap);
             return true;

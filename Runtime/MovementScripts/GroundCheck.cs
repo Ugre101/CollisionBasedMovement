@@ -42,7 +42,7 @@ namespace MovementScripts
         public Vector3 GroundNormal => ground.normal;
         public bool IsGrounded { get; private set; }
         public float DistanceToGround { get; private set; }
-        public float? DistanceToTerrain { get; private set; }
+        public RaycastHit DistanceToGroundHit { get; private set; }
         public GroundState CurrentGroundState { get; private set; }
         public bool Colliding { get; private set; }
         public bool WasGrounded { get; private set; }
@@ -82,7 +82,13 @@ namespace MovementScripts
 
 
             var hit = spherecastHits[0];
-            DistanceToGround = hit.collider is not null ? hit.distance - capsule.Height / 2f + capsule.Radius : 100f;
+            if (hit.collider is not null)
+            {
+                DistanceToGround = hit.distance - capsule.Height / 2f + capsule.Radius;
+                DistanceToGroundHit = hit;
+            }
+            else
+                DistanceToGround = 100f;
 
             var raycastCommand = new SpherecastCommand(capsule.Center, capsule.Radius, Vector3.down, 100f, groundLayer);
             spherecastCommands[0] = raycastCommand;

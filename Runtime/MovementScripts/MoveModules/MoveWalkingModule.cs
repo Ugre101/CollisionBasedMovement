@@ -16,7 +16,6 @@ namespace MovementScripts.MoveModules
         [SerializeField] GroundJumping groundJumping;
         [SerializeField] GroundSnap groundSnap;
         [SerializeField] ForceMode forceMode = ForceMode.Force;
-        [SerializeField, Range(0.2f, 2f),] float fallDist = 1f;
         [SerializeField, Range(0f, 0.2f),] float brakeForce = 0.2f;
         bool crunching;
 
@@ -53,10 +52,17 @@ namespace MovementScripts.MoveModules
 
             switch (checker.CurrentGroundState)
             {
-                case GroundCheck.GroundState.Falling when groundJumping.Jumping is false &&
-                                                          groundSnap.CheckAndApplyGroundSnap(capsule.Height, checker,
-                                                              out var toSnap):
-                    rigid.position += toSnap;
+                case GroundCheck.GroundState.Falling when groundJumping.Jumping is false:
+                    if (groundSnap.CheckAndApplyGroundSnap(capsule.Height, checker, out var toSnap))
+                    {
+                        if (rigid.velocity.y > 0)
+                        {
+                            var vel = rigid.velocity;
+                            vel.y = 0;
+                            rigid.velocity = vel;
+                        }
+                        rigid.position += toSnap;
+                    }
                     break;
                 case GroundCheck.GroundState.Falling when checker.Colliding:
                 {

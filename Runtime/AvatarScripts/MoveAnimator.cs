@@ -39,17 +39,9 @@ namespace AvatarScripts
             if (isCharacterNull || isAnimatorNull)
                 return;
 
-            // Get Character animator
-
-            // Compute input move vector in local space
-
             var move = character.GetLocalMoveDirection();
-            var backing = move.z < 0;
-            // Update the animator parameters
             animator.SetBool(Crouch, character.IsCrouching());
-            animator.SetBool(Ground,
-                character.IsGrounded() || character.WasGrounded() ||
-                character.Swimming); // || character.WasOnGround());
+            animator.SetBool(Ground, character.IsGrounded() || character.WasGrounded()); 
             switch (character.CurrentMode)
             {
                 case MoveCharacter.MoveModes.Walking:
@@ -64,6 +56,7 @@ namespace AvatarScripts
                 case MoveCharacter.MoveModes.Hovering:
                     break;
                 case MoveCharacter.MoveModes.Swimming:
+                    animator.SetBool(Crouch,false);
                     HandleSwimming(move);
                     break;
                 default:

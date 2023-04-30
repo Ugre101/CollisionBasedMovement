@@ -10,12 +10,13 @@ namespace AvatarScripts
         [SerializeField] Transform actorTransform;
 
 
-        bool hasActor;
+        void Awake()
+        {
+            enabled = false;
+        }
 
         void Update()
         {
-            if (hasActor is false)
-                return;
             if (rb.velocity.magnitude == 0) 
                 return;
             UpdateRotation();
@@ -25,10 +26,10 @@ namespace AvatarScripts
         public void SetActorTransform(Transform trans)
         {
             actorTransform = trans;
-            hasActor = true;
+            enabled = true;
         }
 
-        public void SetActorWithAnimator(Animator trans) => actorTransform = trans.transform;
+        public void SetActorWithAnimator(Animator ani) => SetActorTransform(ani.transform);
 
         void UpdateRotation() => actorTransform.rotation = Quaternion.Euler(0, cameraTransform.eulerAngles.y, 0);
     }
