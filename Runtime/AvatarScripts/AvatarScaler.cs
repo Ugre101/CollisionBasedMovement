@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 
 namespace AvatarScripts
 {
@@ -13,10 +12,12 @@ namespace AvatarScripts
         public UnityEvent<float> sizeChange;
         public float CurrentSize { get; private set; } = 1f;
 
+        Vector3 currentScale = Vector3.one;
         public void ChangeSize(float newSize)
         {
             CurrentSize = Mathf.Clamp(newSize, minSize, maxSize);
-            transform.localScale.Set(CurrentSize, CurrentSize, CurrentSize);
+            currentScale.Set(CurrentSize,CurrentSize,CurrentSize);
+            transform.localScale = currentScale;
             characterCapsule.SetHeight(CurrentSize);
             sizeChange?.Invoke(CurrentSize);
         }

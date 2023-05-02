@@ -9,6 +9,13 @@ namespace AvatarScripts
         [SerializeField] Transform cameraTransform;
         [SerializeField] Transform actorTransform;
 
+#if UNITY_EDITOR
+        void OnValidate()
+        {
+            if (cameraTransform == null && Camera.main != null) 
+                cameraTransform = Camera.main.transform;
+        }
+#endif
 
         void Awake()
         {

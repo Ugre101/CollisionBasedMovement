@@ -10,6 +10,10 @@ namespace AvatarScripts
         [SerializeField, HideInInspector,] Vector3 p1PreCalcMath;
         [SerializeField, HideInInspector,] Vector3 p2PreCalcMath;
 
+        [SerializeField, HideInInspector,] float radiusRatio = 0.25f;
+
+        bool crunching;
+
         float currentHeight;
 
         public CapsuleCollider Capsule => capsule;
@@ -41,7 +45,17 @@ namespace AvatarScripts
             CalcCapsulePosition();
         }
 
-        public void CalcCapsulePosition()
+#if UNITY_EDITOR
+
+        void OnValidate()
+        {
+            if (Application.isPlaying)
+                return;
+            radiusRatio = capsule.radius / capsule.height;
+        }
+#endif
+
+        void CalcCapsulePosition()
         {
             p1PreCalcMath = Vector3.up * (capsule.radius + Physics.defaultContactOffset);
             p2PreCalcMath = Vector3.up * (capsule.height - capsule.radius + Physics.defaultContactOffset);
@@ -51,16 +65,24 @@ namespace AvatarScripts
         {
             currentHeight = height;
             capsule.height = currentHeight;
-            capsule.center = currentHeight * 0.5f * Vector3.up;
-            CalcCapsulePosition();
+            if (crunching)
+            {
+                HalfHeight();
+            }
+            else
+            {
+                capsule.radius = currentHeight * radiusRatio;
+                capsule.center = currentHeight * 0.5f * Vector3.up;
+                CalcCapsulePosition();
+            }
         }
-
 
         public void HalfHeight()
         {
             capsule.height /= 2f;
             capsule.center = capsule.height * 0.5f * Vector3.up;
             CalcCapsulePosition();
+            crunching = true;
         }
 
         public void RestoreHeight()
@@ -68,10 +90,12 @@ namespace AvatarScripts
             capsule.height = currentHeight;
             capsule.center = currentHeight * 0.5f * Vector3.up;
             CalcCapsulePosition();
+            crunching = false;
         }
 
         public int OverlapCapsuleNonAlloc(Vector3 capsuleBottom, Collider[] results, LayerMask groundLayer)
-            => Physics.OverlapCapsuleNonAlloc(capsuleBottom + P1PreCalcMath, capsuleBottom + P2PreCalcMath, Radius, results,
+            => Physics.OverlapCapsuleNonAlloc(capsuleBottom + P1PreCalcMath, capsuleBottom + P2PreCalcMath, Radius,
+                results,
                 groundLayer);
     }
 }

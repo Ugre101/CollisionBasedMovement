@@ -53,12 +53,14 @@ namespace Nav_Agent_Movement
             }
         }
 
+#if UNITY_EDITOR
         protected override void OnValidate()
         {
             base.OnValidate();
             if (agent == null && !TryGetComponent(out agent))
                 throw new MissingComponentException();
         }
+#endif
 
         public override bool IsCrouching() => false;
 

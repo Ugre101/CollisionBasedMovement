@@ -16,6 +16,8 @@ namespace MovementScripts
             Sliding,
         }
 
+        const float MaxDistanceToGround = 100f;
+
         [SerializeField] LayerMask groundLayer;
         [SerializeField] CharacterCapsule capsule;
         [SerializeField] Rigidbody rigid;
@@ -88,9 +90,12 @@ namespace MovementScripts
                 DistanceToGroundHit = hit;
             }
             else
-                DistanceToGround = 100f;
+            {
+                DistanceToGround = MaxDistanceToGround;
+            }
 
-            var raycastCommand = new SpherecastCommand(capsule.Center, capsule.Radius, Vector3.down, 100f, groundLayer);
+            var raycastCommand = new SpherecastCommand(capsule.Center, capsule.Radius, Vector3.down,
+                MaxDistanceToGround, groundLayer);
             spherecastCommands[0] = raycastCommand;
 
             sphereCastHandle = SpherecastCommand.ScheduleBatch(spherecastCommands, spherecastHits, 1);
@@ -99,6 +104,14 @@ namespace MovementScripts
         public void OnFixedUpdate()
         {
             IsGrounded = CheckGrounded(contactPoints, out ground);
+            HandleCoyoteTime();
+
+            Colliding = contactPoints.Count > 0;
+            CheckDist();
+        }
+
+        void HandleCoyoteTime()
+        {
             if (IsGrounded)
             {
                 WasGrounded = true;
@@ -112,9 +125,6 @@ namespace MovementScripts
             {
                 WasGrounded = false;
             }
-
-            Colliding = contactPoints.Count > 0;
-            CheckDist();
         }
 
         bool CheckGrounded(HashSet<ContactPoint> list, out ContactPoint groundPoint)
@@ -156,22 +166,20 @@ namespace MovementScripts
 
         public bool CheckStuck(out Vector3 pushDir)
         {
-            pushDir = default;
-            var hashSet = contactPoints;
-            if (hashSet.Count == 0)
+            pushDir = Vector3.zero;
+            if (contactPoints.Count == 0)
+                return false;
+            if (IsGrounded && contactPoints.Count == 1)
                 return false;
 
-            foreach (var point in hashSet)
+            foreach (var point in contactPoints)
             {
                 if (point.separation > 0)
                     continue;
-                if (IsGrounded && point.normal == ground.normal)
-                    continue;
-
                 pushDir += point.normal;
             }
 
-            if (pushDir == default)
+            if (pushDir == Vector3.zero)
                 return false;
 
             pushDir = SlopeDir(pushDir) * stuckPushDelta;
@@ -182,13 +190,14 @@ namespace MovementScripts
 
         public bool CanIStepUp(out Vector3 toMove)
         {
-            toMove = default;
+            toMove = Vector3.zero;
             if (!IsGrounded || dir.magnitude < 0)
+                return false;
+            if (contactPoints.Count <= 1)
                 return false;
             inputData.Update(ground.point.y, SlopeAngle(), dir);
             return stairChecker.StepCheck(contactPoints, out toMove, inputData);
         }
-
 
         public bool OnSlope()
         {

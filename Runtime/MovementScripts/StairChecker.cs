@@ -72,16 +72,39 @@ namespace MovementScripts
             if (!RayCastStep(point, out var hitInfo, inputData.MaxSlopeAngle, maxStep))
                 return false;
 
+            return CheckIfCapsuleFits(out stepHit, inputData, hitInfo);
+        }
+
+        bool CheckIfCapsuleFits(out Vector3 stepHit, StepInputData inputData, RaycastHit hitInfo)
+        {
             stepHit = hitInfo.point;
-            var capsuleBottom = hitInfo.point;
+            if (TryOverlapPos(stepHit, inputData)) 
+                return true;
+            for (int i = 1; i < 9; i++)
+            {
+                stepHit.y += 0.1f * i;
+                if (TryOverlapPos(stepHit, inputData))
+                    return true;
+            }
+
+            return false;
+        }
+
+        bool TryOverlapPos(Vector3 stepHit, StepInputData inputData)
+        {
+            var capsuleBottom = stepHit;
             capsuleBottom.y += 0.01f;
             var size = inputData.Capsule.OverlapCapsuleNonAlloc(capsuleBottom, results, inputData.GroundLayer);
-            if (size <= 0) return true;
+            if (size <= 0)
+                return true;
+
             for (var index = 0; index < size; index++)
                 if (results[index].CompareTag("Player") is false)
-                    return false;
+                {
+                    return true;
+                }
 
-            return true;
+            return false;
         }
 
         bool RayCastStep(ContactPoint point, out RaycastHit hitInfo, float maxSlope, float maxStep)

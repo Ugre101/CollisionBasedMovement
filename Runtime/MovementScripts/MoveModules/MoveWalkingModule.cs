@@ -3,6 +3,7 @@ using AvatarScripts;
 using MovementScripts.MoveModules.SubModules;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 namespace MovementScripts.MoveModules
 {
@@ -12,11 +13,11 @@ namespace MovementScripts.MoveModules
         [SerializeField, Range(float.Epsilon, 1f),]
         float airMultiplier = 0.4f;
 
-        [SerializeField, Range(1f, 3f),] float acceleration = 1.5f;
         [SerializeField] GroundJumping groundJumping;
         [SerializeField] GroundSnap groundSnap;
         [SerializeField] ForceMode forceMode = ForceMode.Force;
         [SerializeField, Range(0f, 0.2f),] float brakeForce = 0.2f;
+        [SerializeField,Range(0.5f,1f)] float crunchSpeedRatio = 0.7f;
         bool crunching;
 
         bool wantToUnCrunch;
@@ -46,31 +47,34 @@ namespace MovementScripts.MoveModules
 
         public override void OnMove(Vector3 force, bool sprinting, float sprintAcc)
         {
-            force *= checker.IsGrounded ? acceleration : airMultiplier;
-            if (checker.IsGrounded && sprinting)
-                force *= sprintAcc;
+            switch (checker.IsGrounded)
+            {
+                case true when crunching:
+                    force *= crunchSpeedRatio;
+                    break;
+                case true when sprinting && !crunching:
+                    force *= sprintAcc;
+                    break;
+                case false:
+                    force *= airMultiplier;
+                    break;
+            }
 
 
             switch (checker.CurrentGroundState)
             {
-                case GroundCheck.GroundState.Falling when groundJumping.Jumping is false:
-                    if (groundSnap.CheckAndApplyGroundSnap(capsule.Height, checker, out var toSnap))
+                case GroundCheck.GroundState.Falling:
+                    if (groundJumping.Jumping is false && groundSnap.CheckAndApplyGroundSnap(capsule.Height, checker, out var toSnap))
                     {
-                        if (rigid.velocity.y > 0)
-                        {
-                            var vel = rigid.velocity;
-                            vel.y = 0;
-                            rigid.velocity = vel;
-                        }
+                        if (rigid.velocity.y > 0) 
+                            RemoveUpVelocity();
                         rigid.position += toSnap;
+                    }else if (checker.Colliding)
+                    {
+                        var slide = Vector3.ProjectOnPlane(new Vector3(0, rigid.velocity.y, 0), Vector3.down);
+                        force = slide;
                     }
                     break;
-                case GroundCheck.GroundState.Falling when checker.Colliding:
-                {
-                    var slide = Vector3.ProjectOnPlane(new Vector3(0, rigid.velocity.y, 0), Vector3.down);
-                    force = slide;
-                    break;
-                }
                 case GroundCheck.GroundState.Sliding:
                 {
                     var slide = Vector3.ProjectOnPlane(new Vector3(0, rigid.velocity.y, 0), Vector3.down);
@@ -80,7 +84,10 @@ namespace MovementScripts.MoveModules
                 case GroundCheck.GroundState.Flat or GroundCheck.GroundState.Incline:
                 {
                     if (checker.CanIStepUp(out var toMove))
+                    {
                         rigid.position += toMove;
+                        RemoveUpVelocity();
+                    }
                     else if (checker.CheckStuck(out var toPush))
                         rigid.position += toPush;
                     break;
@@ -88,6 +95,13 @@ namespace MovementScripts.MoveModules
             }
 
             rigid.AddForce(force, forceMode);
+        }
+
+        void RemoveUpVelocity()
+        {
+            var vel = rigid.velocity;
+            vel.y = 0;
+            rigid.velocity = vel;
         }
 
         public override void OnUpdate()
