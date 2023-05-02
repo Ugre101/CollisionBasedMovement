@@ -19,7 +19,6 @@ namespace PhysicsLayer
 
         public override void OnFixedUpdate(Movement movement)
         {
-            throw new NotImplementedException();
         }
     }
 }

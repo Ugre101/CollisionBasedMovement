@@ -2,7 +2,6 @@ using System;
 using AvatarScripts;
 using CameraScripts;
 using MovementScripts.MoveModules;
-using PhysicsLayer;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -44,8 +43,6 @@ namespace MovementScripts
 
         bool autoRunning;
 
-        BaseLayer currentLayer;
-
         MoveBaseModule currentModule;
         Vector3 moveDir;
 
@@ -54,6 +51,8 @@ namespace MovementScripts
         // Inputs
         float y, x;
         [field: SerializeField] public MoveWalkingModule WalkingModule { get; private set; }
+
+        PhysicLayerHandler PhysicLayerHandler { get; } = new();
 
         void Start()
         {
@@ -92,26 +91,15 @@ namespace MovementScripts
             if (!Moving())
                 currentModule.ApplyBraking();
             currentModule.OnFixedUpdate();
+            PhysicLayerHandler.OnFixedUpdate(this);
             groundChecker.OnEndFixedUpdate();
             //ApplyGravity();
         }
 
-        void OnCollisionEnter(Collision other)
-        {
-            if (!other.gameObject.TryGetComponent(out BaseLayer baseLayer)) return;
-            if (currentLayer != null)
-                currentLayer.OnExit(this);
-            baseLayer.OnEnter(this);
-            currentLayer = baseLayer;
-        }
+        void OnCollisionEnter(Collision other) => PhysicLayerHandler.TryEnterPhysicsLayer(this,other);
 
-        void OnCollisionExit(Collision other)
-        {
-            if (!other.gameObject.TryGetComponent(out BaseLayer baseLayer)) return;
-            if (baseLayer == currentLayer)
-                baseLayer.OnExit(this);
-            currentLayer = null;
-        }
+
+        void OnCollisionExit(Collision other) => PhysicLayerHandler.TryExitPhysicsLayer(this, other);
 
         void OnTriggerEnter(Collider other)
         {
