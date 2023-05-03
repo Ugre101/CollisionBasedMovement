@@ -3,7 +3,7 @@ using UnityEngine.Events;
 
 namespace AvatarScripts
 {
-    public class AvatarScaler : MonoBehaviour
+    public class SimpleAvatarScaler : MonoBehaviour
     {
         [SerializeField, Range(0.1f, 0.5f),] float minSize = 0.2f;
         [SerializeField, Range(2f, 10f),] float maxSize = 4f;

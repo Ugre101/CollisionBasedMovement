@@ -1,14 +1,15 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace AvatarScripts
 {
     public class AvatarScalerTester : MonoBehaviour
     {
-        [SerializeField] AvatarScaler avatarScaler;
+        [FormerlySerializedAs("avatarScaler"),SerializeField] SimpleAvatarScaler simpleAvatarScaler;
 
         [SerializeField, Range(float.Epsilon, 10f)]
         float scale = 1f;
 
-        void OnValidate() => avatarScaler.ChangeSize(scale);
+        void OnValidate() => simpleAvatarScaler.ChangeSize(scale);
     }
 }
