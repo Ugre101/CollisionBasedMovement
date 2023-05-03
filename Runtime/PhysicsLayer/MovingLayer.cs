@@ -5,14 +5,14 @@ namespace PhysicsLayer
     public class MovingLayer : BaseLayer
     {
         
-        public override void OnEnter(Movement moveStatsManager)
+        public override void OnEnter(Movement mover)
         {
-            moveStatsManager.transform.SetParent(transform);
+            mover.transform.SetParent(transform);
         }
 
-        public override void OnExit(Movement moveStatsManager)
+        public override void OnExit(Movement mover)
         {
-            moveStatsManager.transform.SetParent(null);
+            mover.transform.SetParent(null);
         }
 
         public override void OnFixedUpdate(Movement movement)

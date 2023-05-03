@@ -30,6 +30,7 @@ namespace CameraScripts
         bool mouseLocked;
 
         float xRot, yRot;
+        WaitForEndOfFrame waitForEndOfFrame;
 
         void Start()
         {
@@ -127,7 +128,7 @@ namespace CameraScripts
                 cameraOrientation.transform.localPosition = currentElevation;
                 if (y >= maxElevation && y <= minElevation)
                     yield break;
-                yield return new WaitForEndOfFrame();
+                yield return null;
             }
         }
 

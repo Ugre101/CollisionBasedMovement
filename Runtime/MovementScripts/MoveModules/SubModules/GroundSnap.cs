@@ -9,9 +9,9 @@ namespace MovementScripts.MoveModules.SubModules
         [SerializeField, Range(0.01f, 0.5f),] float minDist = 0.1f;
         [SerializeField, Range(0.1f, 1f),] float maxDist = 0.4f;
 
-        [SerializeField, Range(float.Epsilon, 1f),]
-        float maxSnapCapsule = 0.1f;
+        // [SerializeField, Range(float.Epsilon, 1f),] float maxSnapCapsule = 0.1f;
 
+        [SerializeField, Range(1f, 10f)] float snapForce = 4f;
         public bool CheckAndApplyGroundSnap(float capsuleHeight, GroundCheck checker, out Vector3 toSnap)
         {
             toSnap = default;
@@ -21,8 +21,8 @@ namespace MovementScripts.MoveModules.SubModules
                 return false;
             
             var distanceToGround = checker.DistanceToGround;
-            var maxSnap = capsuleHeight * maxSnapCapsule;
-            toSnap = Vector3.down * Mathf.Min(distanceToGround, maxSnap);
+            //var maxSnap = capsuleHeight * maxSnapCapsule;
+            toSnap = Vector3.down * (distanceToGround * snapForce);  //Mathf.Min(distanceToGround, maxSnap);
             return true;
         }
     }

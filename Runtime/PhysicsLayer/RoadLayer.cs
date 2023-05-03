@@ -16,17 +16,17 @@ namespace PhysicsLayer
         WaitForSeconds waitForSeconds;
         void Start() => waitForSeconds = new WaitForSeconds(removeDelay);
 
-        public override void OnEnter(Movement movement)
+        public override void OnEnter(Movement mover)
         {
             if (removeRoutine is not null)
                 StopCoroutine(removeRoutine);
             else
-                movement.Stats.AddMod(MoveCharacter.MoveModes.Walking, speedMod);
+                mover.Stats.AddMod(MoveCharacter.MoveModes.Walking, speedMod);
         }
 
-        public override void OnExit(Movement movement)
+        public override void OnExit(Movement mover)
         {
-            removeRoutine = StartCoroutine(RemoveAfterDelay(movement.Stats));
+            removeRoutine = StartCoroutine(RemoveAfterDelay(mover.Stats));
         }
 
         public override void OnFixedUpdate(Movement movement)

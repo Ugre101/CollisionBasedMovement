@@ -84,6 +84,7 @@ namespace MovementScripts.MoveModules
 
         public override void OnMove(Vector3 force, bool sprinting, float sprintAcc)
         {
+            force *= stats.WalkSpeed;
             if (checker.IsGrounded && sprinting)
                 force *= sprintAcc;
             rigid.AddForce(force, ForceMode.Force);

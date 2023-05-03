@@ -9,11 +9,11 @@ namespace PhysicsLayer
         [SerializeField] Vector3 currentDirection;
         [SerializeField] float currentForce;
 
-        public override void OnEnter(Movement moveStatsManager)
+        public override void OnEnter(Movement mover)
         {
         }
 
-        public override void OnExit(Movement movement)
+        public override void OnExit(Movement mover)
         {
         }
 

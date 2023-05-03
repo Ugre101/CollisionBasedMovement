@@ -39,17 +39,17 @@ namespace DefaultNamespace
 
         bool ReachedDestination(Vector3 dest) => (transform.position - dest).magnitude < float.Epsilon;
 
-        public override void OnEnter(Movement moveStatsManager)
+        public override void OnEnter(Movement mover)
         {
-            base.OnEnter(moveStatsManager);
+            base.OnEnter(mover);
             if (returnRoutine != null)
                 StopCoroutine(returnRoutine);
         }
 
         Coroutine returnRoutine;
-        public override void OnExit(Movement moveStatsManager)
+        public override void OnExit(Movement mover)
         {
-            base.OnExit(moveStatsManager);
+            base.OnExit(mover);
             if (ReachedDestination(startPos) is false)
                 returnRoutine =  StartCoroutine(ReturnToStart());
         }

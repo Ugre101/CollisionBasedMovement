@@ -70,9 +70,11 @@ namespace AvatarScripts
                 return true;
             if (character.WasGrounded())
                 return !character.IsJumping();
-            return false;
+            return character.Swimming;
         }
 
+#if UNITY_EDITOR
+        
         void OnValidate()
         {
             if (Application.isPlaying)
@@ -82,6 +84,7 @@ namespace AvatarScripts
             if (character == null && !transform.parent.TryGetComponent(out character))
                 throw new MissingComponentException();
         }
+#endif
 
         public void SetAnimator(Animator obj)
         {

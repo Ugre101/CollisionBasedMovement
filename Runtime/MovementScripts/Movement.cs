@@ -4,6 +4,7 @@ using CameraScripts;
 using MovementScripts.MoveModules;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 namespace MovementScripts
 {
@@ -41,6 +42,8 @@ namespace MovementScripts
         [SerializeField, Range(float.Epsilon, 1f),]
         float percentSubToSwim = 0.5f;
 
+        [SerializeField, Range(1f, 10f),] float directionChangeBoost = 2f;
+
         bool autoRunning;
 
         MoveBaseModule currentModule;
@@ -50,6 +53,8 @@ namespace MovementScripts
 
         // Inputs
         float y, x;
+        [SerializeField,Range(float.Epsilon,1f),] float directionChangeThreshold = 0.2f;
+        [SerializeField, Range(2f,10f)] float maxLowVelBoost = 4f;
         [field: SerializeField] public MoveWalkingModule WalkingModule { get; private set; }
 
         PhysicLayerHandler PhysicLayerHandler { get; } = new();
@@ -58,9 +63,9 @@ namespace MovementScripts
         {
             Rigid.freezeRotation = true;
             Rigid.useGravity = false;
-            WalkingModule.OnStart(Rigid, capsuleCollider, groundChecker,Stats);
-            swimModule.OnStart(Rigid, capsuleCollider, groundChecker,Stats);
-            hoverModule.OnStart(Rigid, capsuleCollider, groundChecker,Stats);
+            WalkingModule.OnStart(Rigid, capsuleCollider, groundChecker, Stats);
+            swimModule.OnStart(Rigid, capsuleCollider, groundChecker, Stats);
+            hoverModule.OnStart(Rigid, capsuleCollider, groundChecker, Stats);
             ChangeModule(WalkingModule);
             transform.SetParent(null);
         }
@@ -96,7 +101,7 @@ namespace MovementScripts
             //ApplyGravity();
         }
 
-        void OnCollisionEnter(Collision other) => PhysicLayerHandler.TryEnterPhysicsLayer(this,other);
+        void OnCollisionEnter(Collision other) => PhysicLayerHandler.TryEnterPhysicsLayer(this, other);
 
 
         void OnCollisionExit(Collision other) => PhysicLayerHandler.TryExitPhysicsLayer(this, other);
@@ -180,7 +185,6 @@ namespace MovementScripts
         {
             ChangeModule(WalkingModule);
             CurrentMode = MoveModes.Walking;
-            print("Stop Swimming");
         }
 
         void StartSwimming(Collider other)
@@ -245,13 +249,28 @@ namespace MovementScripts
             moveDir = groundChecker.OnSlope() ? groundChecker.SlopeDir(inputDir) : inputDir.normalized;
             groundChecker.SetDirection(moveDir);
 
-            var accDelta = MaxSpeed / Mathf.Max(Rigid.velocity.magnitude, 2f);
             var force = moveDir;
-            if (CurrentMode == MoveModes.Swimming)
-                force *=  MaxSwimSpeed * accDelta;
-            else
-                force *=  Speed * accDelta;
+            if (Rigid.velocity.magnitude is < 7f and > float.Epsilon)
+                force *= Mathf.Min(MaxSpeed / Rigid.velocity.magnitude,maxLowVelBoost);
+
+            force = DirectionChangeBoost(force);
             currentModule.OnMove(force, sprinting, sprintAcceleration);
+        }
+
+        Vector3 DirectionChangeBoost(Vector3 force)
+        {
+            var dirDiff = (FlatVel(Rigid.velocity).normalized - FlatVel(force).normalized).magnitude;
+            if (dirDiff > directionChangeThreshold)
+                force *= directionChangeBoost;
+            return force;
+        }
+
+
+        static Vector3 FlatVel(Vector3 vel)
+        {
+            var flatVel = vel;
+            flatVel.Set(vel.x, 0, vel.z);
+            return flatVel;
         }
 
         Vector3 ThirdPersonTurn()
@@ -273,8 +292,7 @@ namespace MovementScripts
 
         void SpeedControl()
         {
-            var flatVel = Rigid.velocity;
-            flatVel.y = 0;
+            var flatVel = FlatVel(Rigid.velocity);
             if (flatVel.magnitude < MaxSpeed)
                 return;
             if (MaxSpeed > absoluteMaxSpeed)
@@ -304,6 +322,16 @@ namespace MovementScripts
         public override Vector3 GetUpVector() => ori.rotation * Vector3.up;
 
         public void AddMod(MoveModes walking, FloatMod speedMod)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StartClimbing()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StopClimbing()
         {
             throw new NotImplementedException();
         }

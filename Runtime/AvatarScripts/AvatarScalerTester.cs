@@ -10,6 +10,7 @@ namespace AvatarScripts
         [SerializeField, Range(float.Epsilon, 10f)]
         float scale = 1f;
 
+        
         void OnValidate() => simpleAvatarScaler.ChangeSize(scale);
     }
 }

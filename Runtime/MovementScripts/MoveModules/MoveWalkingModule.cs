@@ -3,7 +3,6 @@ using AvatarScripts;
 using MovementScripts.MoveModules.SubModules;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Serialization;
 
 namespace MovementScripts.MoveModules
 {
@@ -47,6 +46,7 @@ namespace MovementScripts.MoveModules
 
         public override void OnMove(Vector3 force, bool sprinting, float sprintAcc)
         {
+            force *= stats.WalkSpeed;
             switch (checker.IsGrounded)
             {
                 case true when crunching:
@@ -60,7 +60,6 @@ namespace MovementScripts.MoveModules
                     break;
             }
 
-
             switch (checker.CurrentGroundState)
             {
                 case GroundCheck.GroundState.Falling:
@@ -68,11 +67,11 @@ namespace MovementScripts.MoveModules
                     {
                         if (rigid.velocity.y > 0) 
                             RemoveUpVelocity();
-                        rigid.position += toSnap;
+                        //rigid.position += toSnap;
+                        rigid.AddForce(toSnap,ForceMode.Impulse);
                     }else if (checker.Colliding)
                     {
-                        var slide = Vector3.ProjectOnPlane(new Vector3(0, rigid.velocity.y, 0), Vector3.down);
-                        force = slide;
+                        goto case GroundCheck.GroundState.Sliding;
                     }
                     break;
                 case GroundCheck.GroundState.Sliding:
